@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(JAVA_HOME=\"/c/Program Files/Java/jdk-17\" \"/c/Users/ZAINAB/.m2/wrapper/dists/apache-maven-3.9.14-bin/1cb7fhup6b5n3bed6kckbrnspv/apache-maven-3.9.14/bin/mvn\" compile)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\menu-service\" -Recurse -Force)",
+      "Bash(Select-Object FullName)",
+      "Bash(Sort-Object FullName)",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\menu-service\" -Recurse -File | ForEach-Object { $_.FullName } | Sort-Object)",
+      "PowerShell(@\\('config', 'controller', 'dtos', 'repository', 'service'\\) | ForEach-Object { Get-ChildItem -Path \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\menu-service\\\\src\\\\main\\\\java\\\\com\\\\microservices\\\\menu\\\\$_\" -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } })",
+      "PowerShell(@\\('config', 'controller', 'dtos', 'repository', 'service'\\) | ForEach-Object { $path = \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\menu-service\\\\src\\\\main\\\\java\\\\com\\\\microservices\\\\menu\\\\$_\"; $exists = Test-Path $path; $count = @\\(Get-ChildItem -Path $path -ErrorAction SilentlyContinue\\).Count; Write-Output \"$_ - Exists: $exists, Files: $count\" })",
+      "Bash(curl -s http://localhost:8761/eureka/apps)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{redirect_url}\" http://localhost:8080/swagger-ui.html)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/swagger-ui/index.html)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/webjars/swagger-ui/index.html)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/v3/api-docs/swagger-config)",
+      "Bash(curl -s http://localhost:8080/v3/api-docs/swagger-config)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\kitchen-service\" -Recurse -Force)",
+      "PowerShell($path = \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\kitchen-service\"; Get-ChildItem -Path $path -Recurse -Force | Where-Object {-not $_.PSIsContainer} | ForEach-Object {$_.FullName} | Sort-Object)",
+      "Bash(Select-String -Pattern \"ERROR|WARN|Exception|Caused by\")",
+      "Bash(Select-Object -Last 20)",
+      "Bash(docker run *)",
+      "Bash(Start-Sleep -Seconds 15)",
+      "Bash(Get-Content \"C:\\\\Users\\\\ZAINAB\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-ZAINAB-Documents-GitHub-api-gateway\\\\ac866f0a-3308-442b-bda5-2d849956222f\\\\tasks\\\\btc0e2juy.output\")",
+      "PowerShell(docker restart order-service)",
+      "PowerShell(try { Invoke-RestMethod -Uri 'http://localhost:8081/api/branch?size=20' -Headers @{'X-User-Id'='test';'X-User-Role'='OFFICE_ADMIN'} } catch { $_.Exception.Response.StatusCode; $_.ErrorDetails.Message })",
+      "PowerShell($file = \"C:\\\\Users\\\\ZAINAB\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-ZAINAB-Documents-GitHub-api-gateway\\\\ac866f0a-3308-442b-bda5-2d849956222f\\\\tasks\\\\btln4r6da.output\"; $start = Get-Date; $done = $false; while \\(-not $done -and \\(\\(Get-Date\\) - $start\\).TotalSeconds -lt 480\\) { Start-Sleep -Seconds 20; $content = Get-Content $file -Raw -ErrorAction SilentlyContinue; if \\($content -match \"BUILD SUCCESS|BUILD FAILURE|failed to solve\"\\) { $done = $true } }; Get-Content $file -Tail 20)",
+      "Bash(Get-Content \"C:\\\\Users\\\\ZAINAB\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-ZAINAB-Documents-GitHub-api-gateway\\\\ac866f0a-3308-442b-bda5-2d849956222f\\\\tasks\\\\bgc5jefvb.output\" -Wait)",
+      "Bash(Select-String -Pattern \"Step|Successfully|ERROR|error|FAILED|failed|Built|=>|mvn|BUILD\" --SimpleMatch)",
+      "PowerShell(docker run --rm mysql:8 mysql -h my-rds-mysql.c4hs6um4wrpt.us-east-1.rds.amazonaws.com -P 3306 -u admin \"-pZain_1234$\" -e \"CREATE DATABASE IF NOT EXISTS notifications_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; SHOW DATABASES;\" 2>&1)",
+      "PowerShell(docker run --rm mysql:8 mysql -h my-rds-mysql.c4hs6um4wrpt.us-east-1.rds.amazonaws.com -P 3306 -u admin \"-pZain_1234$\" -e \"CREATE DATABASE IF NOT EXISTS analytics_report_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; SHOW DATABASES LIKE 'analytics%';\" 2>&1)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\ZAINAB\\Documents\\GitHub\\notification-service",
+      "c:\\Users\\ZAINAB\\Documents\\GitHub\\notifications-service\\src\\main\\resources",
+      "c:\\Users\\ZAINAB\\Documents\\GitHub\\notifications-service",
+      "C:\\Users\\ZAINAB\\Documents\\GitHub\\analytics-report-service\\src\\main\\java\\com\\microservices",
+      "c:\\Users\\ZAINAB\\Documents\\GitHub\\analytics-report-service"
+    ]
+  }
+}

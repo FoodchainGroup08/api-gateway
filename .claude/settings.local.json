@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker info *)",
+      "Bash(docker compose *)",
+      "PowerShell(curl -s http://localhost:8761/eureka/apps | Select-String -Pattern \"<appName>\" | ForEach-Object { $_.Line.Trim\\(\\) })",
+      "PowerShell(\\(Invoke-WebRequest -Uri \"http://localhost:8761/eureka/apps\" -UseBasicParsing\\).Content | Select-String -Pattern \"<appName>\" -AllMatches | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value })",
+      "PowerShell($response = \\(Invoke-WebRequest -Uri \"http://localhost:8761/eureka/apps\" -UseBasicParsing\\).Content; Write-Output $response)",
+      "PowerShell($r = \\(Invoke-WebRequest -Uri \"http://localhost:8761/eureka/apps\" -UseBasicParsing\\).Content; [regex]::Matches\\($r, \"<name>[A-Z][A-Z-]+</name>\"\\) | ForEach-Object { $_.Value } | Select-Object -Unique)",
+      "Bash(./mvnw test *)",
+      "PowerShell(Get-Command mvn -ErrorAction SilentlyContinue)",
+      "Bash(which mvn *)",
+      "Read(//c/Users/ZAINAB/**)",
+      "Bash(\"/c/Users/ZAINAB/.m2/wrapper/dists/apache-maven-3.9.14-bin/1cb7fhup6b5n3bed6kckbrnspv/apache-maven-3.9.14/bin/mvn\" test *)",
+      "Bash(ls \"/c/Program Files/Java/\")",
+      "Read(//c/Program Files/Java//**)",
+      "Bash(JAVA_HOME=\"/c/Program Files/Java/jdk-17\" \"/c/Users/ZAINAB/.m2/wrapper/dists/apache-maven-3.9.14-bin/1cb7fhup6b5n3bed6kckbrnspv/apache-maven-3.9.14/bin/mvn\" test)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(Get-ChildItem -Recurse \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\branch-service\\\\src\" -File)",
+      "Bash(Select-Object -First 50)",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\order-service\\\\src\\\\main\\\\java\" -Recurse -File | ForEach-Object { $_.FullName.Replace\\(\"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\order-service\\\\src\\\\main\\\\java\\\\\", \"\"\\) } | Sort-Object)",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\branch-service\\\\src\\\\main\\\\java\" -Recurse -File | ForEach-Object { $_.FullName.Replace\\(\"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\branch-service\\\\src\\\\main\\\\java\\\\\", \"\"\\) } | Sort-Object)"
+    ]
+  }
+}
