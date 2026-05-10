@@ -1,5 +1,7 @@
 package com.microservices.gateway.filter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -8,15 +10,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class JwtAuthFilter implements GlobalFilter, Ordered {
@@ -24,22 +33,22 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    /** Paths that do not require a Bearer token (gateway receives full paths e.g. /api/v1/auth/login). */
-    private static final List<String> PUBLIC_PATHS = List.of(
-            "/api/v1/auth/login",
-            "/api/v1/auth/register",
-            "/api/v1/auth/refresh",
-            "/api/v1/auth/forgot-password",
-            "/api/v1/auth/reset-password",
-            "/api/v1/auth/verify-email",
-            "/api/v1/auth/resend-verification",
-            "/api/v1/auth/google",
-            "/api/v1/branches",
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    /** Always public regardless of HTTP method. */
+    private static final List<String> ALWAYS_PUBLIC = List.of(
             "/actuator",
             "/swagger-ui",
             "/v3/api-docs",
             "/webjars",
             "/swagger-resources"
+    );
+
+    /** Public for GET only — write operations on these paths still require a token. */
+    private static final List<String> PUBLIC_GET_PREFIXES = List.of(
+            "/api/v1/branches",
+            "/api/v1/menu",
+            "/api/v1/notifications"
     );
 
     private static final List<String> WEBSOCKET_PATHS = List.of(
@@ -50,16 +59,22 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
+        HttpMethod method = exchange.getRequest().getMethod();
 
-        if (isPublicPath(path) || isWebSocketPath(path)) {
+        if (method == HttpMethod.OPTIONS) {
+            return chain.filter(exchange);
+        }
+
+        if (isAlwaysPublic(path) || isWebSocketPath(path) || isPublicAuthPath(path) ||
+                (method == HttpMethod.GET && isPublicGetPath(path))) {
             return chain.filter(exchange);
         }
 
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+            return writeError(exchange, HttpStatus.UNAUTHORIZED,
+                    "Authentication required — provide a valid Bearer token");
         }
 
         try {
@@ -83,9 +98,25 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
             return chain.filter(mutated);
 
         } catch (JwtException e) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+            return writeError(exchange, HttpStatus.UNAUTHORIZED,
+                    "Invalid or expired token — please log in again");
         }
+    }
+
+    private boolean isPublicAuthPath(String path) {
+        return path.startsWith("/api/v1/auth/") && !path.startsWith("/api/v1/auth/me");
+    }
+
+    private boolean isAlwaysPublic(String path) {
+        return ALWAYS_PUBLIC.stream().anyMatch(path::startsWith);
+    }
+
+    private boolean isPublicGetPath(String path) {
+        return PUBLIC_GET_PREFIXES.stream().anyMatch(path::startsWith);
+    }
+
+    private boolean isWebSocketPath(String path) {
+        return WEBSOCKET_PATHS.stream().anyMatch(path::startsWith);
     }
 
     private Claims parseToken(String token) {
@@ -97,12 +128,25 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
                 .getPayload();
     }
 
-    private boolean isPublicPath(String path) {
-        return PUBLIC_PATHS.stream().anyMatch(path::startsWith);
-    }
+    private Mono<Void> writeError(ServerWebExchange exchange, HttpStatus status, String message) {
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(status);
+        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-    private boolean isWebSocketPath(String path) {
-        return WEBSOCKET_PATHS.stream().anyMatch(path::startsWith);
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("status", status.value());
+        body.put("error", status.getReasonPhrase());
+        body.put("message", message);
+        body.put("path", exchange.getRequest().getURI().getPath());
+        body.put("timestamp", Instant.now().toString());
+
+        try {
+            byte[] bytes = objectMapper.writeValueAsBytes(body);
+            DataBuffer buffer = response.bufferFactory().wrap(bytes);
+            return response.writeWith(Mono.just(buffer));
+        } catch (JsonProcessingException e) {
+            return response.setComplete();
+        }
     }
 
     @Override
