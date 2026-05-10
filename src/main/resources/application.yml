@@ -13,50 +13,107 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
-        # ── Service routes ────────────────────────────────────────────────────
+        # ── Service routes (API v1) ──────────────────────────────────────────
         - id: order-service
           uri: lb://order-service
           predicates:
-            - Path=/api/orders/**
+            - Path=/api/v1/orders/**
 
         - id: menu-service
           uri: lb://menu-service
           predicates:
-            - Path=/api/menu/**
+            - Path=/api/v1/menu/**
 
         - id: branch-service
           uri: lb://branch-service
           predicates:
-            - Path=/api/branch/**
+            - Path=/api/v1/branch/**
 
         - id: kitchen-service
           uri: lb://kitchen-service
           predicates:
-            - Path=/api/kitchen/**
+            - Path=/api/v1/kitchen/**
 
         - id: analytics-report-service-analytics
           uri: lb://analytics-report-service
           predicates:
-            - Path=/api/analytics/**
+            - Path=/api/v1/analytics/**
 
         - id: analytics-report-service-reports
           uri: lb://analytics-report-service
           predicates:
-            - Path=/api/reports/**
+            - Path=/api/v1/reports/**
 
         - id: notifications-service
           uri: lb://notifications-service
           predicates:
-            - Path=/api/notifications/**
+            - Path=/api/v1/notifications/**
 
         - id: notifications-service-ws
           uri: lb://notifications-service
           predicates:
             - Path=/ws-notifications/**
 
+        # ── Auth & User routes (user-service) ────────────────────────────────
+        - id: user-service-auth
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/auth/**
+
+        - id: user-service-users
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/users/**
+
+        - id: user-service-admin-users
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/admin/users/**
+
+        # ── Branches (canonical /branches path, branch-service) ──────────────
+        - id: branch-service-branches
+          uri: lb://branch-service
+          predicates:
+            - Path=/api/v1/branches/**
+
+        # ── Manager dashboard (analytics-report-service) ─────────────────────
+        - id: analytics-manager
+          uri: lb://analytics-report-service
+          predicates:
+            - Path=/api/v1/manager/**
+
+        # ── Admin analytics (analytics-report-service) ───────────────────────
+        - id: analytics-admin
+          uri: lb://analytics-report-service
+          predicates:
+            - Path=/api/v1/admin/analytics/**
+
+        # ── Raw WebSocket endpoints (notifications-service) ──────────────────
+        - id: ws-kitchen
+          uri: lb:ws://notifications-service
+          predicates:
+            - Path=/ws/kitchen/**
+
+        - id: ws-orders
+          uri: lb:ws://notifications-service
+          predicates:
+            - Path=/ws/orders/**
+
+        - id: ws-manager
+          uri: lb:ws://notifications-service
+          predicates:
+            - Path=/ws/manager/**
+
         # ── OpenAPI docs proxy routes ─────────────────────────────────────────
         # Each service has context-path /api, so its docs live at /api/v3/api-docs.
         # The gateway proxies /v3/api-docs/{service} → lb://{service}/api/v3/api-docs.
+        - id: user-service-docs
+          uri: lb://user-service
+          predicates:
+            - Path=/v3/api-docs/user-service
+          filters:
+            - RewritePath=/v3/api-docs/user-service, /api/v3/api-docs
+
         - id: order-service-docs
           uri: lb://order-service
           predicates:
@@ -131,6 +188,8 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     urls:
+      - name: User Service
+        url: /v3/api-docs/user-service
       - name: Order Service
         url: /v3/api-docs/order-service
       - name: Menu Service
