@@ -74,7 +74,7 @@ spring:
         - id: branch-service-branches
           uri: lb://branch-service
           predicates:
-            - Path=/api/v1/branches/**
+            - Path=/api/v1/branches,/api/v1/branches/**
 
         # ── Manager dashboard (analytics-report-service) ─────────────────────
         - id: analytics-manager
