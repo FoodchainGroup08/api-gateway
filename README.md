@@ -6,141 +6,113 @@ Central entry point for all FoodChain microservices. Built with **Spring Cloud G
 - **Eureka name:** `api-gateway`
 - **Swagger UI:** http://localhost:8080/swagger-ui.html
 
+Clients should call **this** host for HTTP APIs (not individual service ports), unless you are debugging a service directly.
+
 ---
 
-## Route Table
+## Route table
 
-All requests enter at port `8080`. The gateway strips nothing — paths are forwarded as-is.
+All traffic enters on port **8080**. Paths use the **`/api/v1/**`** prefix (see `application.yml` / config server `api-gateway.yml`).
 
-| Path Prefix | Downstream Service | Notes |
-|---|---|---|
-| `POST /api/orders/**` | `order-service` | HTTP only |
-| `/api/menu/**` | `menu-service` | |
-| `/api/branch/**` | `branch-service` | Kept for backward compatibility |
-| `/api/branches/**` | `branch-service` | Canonical path |
-| `/api/kitchen/**` | `kitchen-service` | |
-| `/api/analytics/**` | `analytics-report-service` | |
-| `/api/reports/**` | `analytics-report-service` | |
-| `/api/manager/**` | `analytics-report-service` | Manager dashboard endpoints |
-| `/api/admin/analytics/**` | `analytics-report-service` | Admin analytics endpoints |
-| `/api/notifications/**` | `notifications-service` | |
-| `/api/auth/**` | `user-service` | Login, register, refresh, forgot-password |
-| `/api/users/**` | `user-service` | User profile / management |
-| `/api/admin/users/**` | `user-service` | Admin user management |
+| Path prefix | Downstream service |
+|-------------|-------------------|
+| `/api/v1/orders/**` | `order-service` |
+| `/api/v1/menu/**` | `menu-service` |
+| `/api/v1/branch/**` | `branch-service` (legacy singular path, if configured) |
+| `/api/v1/branches/**` | `branch-service` (canonical branches API) |
+| `/api/v1/kitchen/**` | `kitchen-service` |
+| `/api/v1/analytics/**` | `analytics-report-service` |
+| `/api/v1/reports/**` | `analytics-report-service` |
+| `/api/v1/manager/**` | `analytics-report-service` |
+| `/api/v1/admin/analytics/**` | `analytics-report-service` |
+| `/api/v1/notifications/**` | `notifications-service` |
+| `/api/v1/auth/**` | `user-service` |
+| `/api/v1/users/**` | `user-service` |
+| `/api/v1/admin/users/**` | `user-service` |
 
-### WebSocket Routes
+### WebSocket routes
 
-| Path Prefix | Downstream Service | Protocol |
-|---|---|---|
-| `/ws-notifications/**` | `notifications-service` | STOMP over WebSocket |
+| Path prefix | Downstream | Protocol |
+|-------------|------------|----------|
+| `/ws-notifications/**` | `notifications-service` | STOMP / SockJS |
 | `/ws/kitchen/**` | `notifications-service` | Raw WebSocket (`lb:ws://`) |
-| `/ws/orders/**` | `notifications-service` | Raw WebSocket (`lb:ws://`) |
-| `/ws/manager/**` | `notifications-service` | Raw WebSocket (`lb:ws://`) |
+| `/ws/orders/**` | `notifications-service` | Raw WebSocket |
+| `/ws/manager/**` | `notifications-service` | Raw WebSocket |
 
-WebSocket paths bypass JWT validation entirely (pass-through).
+WebSocket paths **do not** require JWT in this gateway filter (pass-through).
 
-### OpenAPI Docs Proxy Routes
+### OpenAPI docs proxy
 
-Each service exposes docs at `/api/v3/api-docs`. The gateway rewrites these to a stable public URL:
+Each service exposes docs under its own context path. The gateway exposes a stable URL per service:
 
-| Gateway URL | Proxied To |
-|---|---|
-| `/v3/api-docs/user-service` | `user-service:/api/v3/api-docs` |
-| `/v3/api-docs/order-service` | `order-service:/api/v3/api-docs` |
-| `/v3/api-docs/menu-service` | `menu-service:/api/v3/api-docs` |
-| `/v3/api-docs/branch-service` | `branch-service:/api/v3/api-docs` |
-| `/v3/api-docs/kitchen-service` | `kitchen-service:/api/v3/api-docs` |
-| `/v3/api-docs/analytics-report-service` | `analytics-report-service:/api/v3/api-docs` |
-| `/v3/api-docs/notifications-service` | `notifications-service:/api/v3/api-docs` |
-
----
-
-## JWT Validation
-
-Handled by `JwtAuthFilter` — a `GlobalFilter` with order `-1` (runs before all other filters).
-
-### Public Paths (no token required)
-
-Requests to any of these path prefixes skip JWT validation:
-
-| Path |
-|---|
-| `/api/auth/login` |
-| `/api/auth/register` |
-| `/api/auth/refresh` |
-| `/api/auth/forgot-password` |
-| `/actuator/**` |
-| `/swagger-ui/**` |
-| `/v3/api-docs/**` |
-| `/webjars/**` |
-| `/swagger-resources/**` |
-
-WebSocket paths (`/ws/**`, `/ws-notifications/**`) also bypass validation unconditionally.
-
-### Protected Paths
-
-All other paths require a valid `Authorization: Bearer <token>` header.
-
-On validation failure the gateway returns `401 Unauthorized` immediately — the request never reaches a downstream service.
-
-### Headers Forwarded to Downstream Services
-
-After successful JWT validation the gateway **removes** the `Authorization` header and forwards these instead:
-
-| Header | JWT Source | Notes |
-|---|---|---|
-| `X-User-Id` | `sub` (JWT subject) | User UUID |
-| `X-User-Role` | `role` claim | Role string e.g. `ADMIN`, `MANAGER`, `STAFF` |
-| `X-User-Email` | `email` claim | User's email address |
-| `X-User-BranchId` | `branchId` claim | Only set when the claim is non-null |
-
-Downstream services should read these headers instead of parsing the JWT themselves.
+| Gateway URL | Proxied to |
+|-------------|------------|
+| `/v3/api-docs/user-service` | `user-service` → `/api/v3/api-docs` |
+| `/v3/api-docs/order-service` | `order-service` → `/api/v3/api-docs` |
+| `/v3/api-docs/menu-service` | `menu-service` → `/api/v3/api-docs` |
+| `/v3/api-docs/branch-service` | `branch-service` → `/api/v3/api-docs` |
+| `/v3/api-docs/kitchen-service` | `kitchen-service` → `/api/v3/api-docs` |
+| `/v3/api-docs/analytics-report-service` | `analytics-report-service` → `/api/v3/api-docs` |
+| `/v3/api-docs/notifications-service` | `notifications-service` → `/api/v3/api-docs` |
 
 ---
 
-## CORS Configuration
+## JWT validation (`JwtAuthFilter`)
 
-Global CORS is permissive for development. Tighten `allowed-origins` for production.
+Order: `-1` (runs before route predicates). Validates HS256 JWT using `jwt.secret` (same secret as **user-service**).
 
-```yaml
-globalcors:
-  cors-configurations:
-    "[/**]":
-      allowed-origins: "*"
-      allowed-methods: "*"
-      allowed-headers: "*"
+### Anonymous requests (no `Authorization` header)
+
+| Rule | Details |
+|------|---------|
+| **OPTIONS** | All paths (CORS preflight). |
+| **Always public** | Prefixes: `/actuator`, `/swagger-ui`, `/v3/api-docs`, `/webjars`, `/swagger-resources`. |
+| **Auth (unauthenticated)** | `POST`/`GET` etc. under `/api/v1/auth/**` **except** `GET /api/v1/auth/me` (me requires a token). |
+| **GET only** | **Exactly** `GET /api/v1/branches` (paginated list), and **GET** `/api/v1/branches/nearby` (location search). |
+
+Everything else requires:
+
+```http
+Authorization: Bearer <access-token>
 ```
+
+Failed validation returns **401** with a **JSON** body: `status`, `error`, `message`, `path`, `timestamp`.
+
+### After successful validation
+
+The gateway **removes** `Authorization` and forwards identity to downstream services:
+
+| Header | JWT claim | Notes |
+|--------|-----------|--------|
+| `X-User-Id` | `sub` | User UUID |
+| `X-User-Role` | `role` | Enum-style role, e.g. `HEAD_OFFICE_ADMIN`, `CUSTOMER`, `KITCHEN_STAFF` |
+| `X-User-Email` | `email` | |
+| `X-User-BranchId` | `branchId` | Omitted if claim absent |
+
+Downstream services that do not re-parse JWT rely on these headers (especially **`X-User-Role`** for admin checks). **user-service** can still authenticate when `Authorization: Bearer` is sent directly (bypassing the gateway).
+
+---
+
+## CORS
+
+Permissive for development (`allowed-origins: *`). Restrict in production.
 
 ---
 
 ## Swagger UI
 
-Access the aggregated Swagger UI at:
-
-```
-http://localhost:8080/swagger-ui.html
-```
-
-Use the dropdown in the top-right corner to switch between services:
-
-- User Service
-- Order Service
-- Menu Service
-- Branch Service
-- Kitchen Service
-- Analytics & Report Service
-- Notifications Service
+http://localhost:8080/swagger-ui.html — use the dropdown to pick each service’s OpenAPI definition.
 
 ---
 
-## Environment Variables
+## Environment variables
 
-| Variable | Default | Description |
-|---|---|---|
-| `JWT_SECRET` | `your-256-bit-secret-key-change-this-in-production-min-32-chars` | HS256 signing key — must be at least 32 characters. **Change in production.** |
-| `EUREKA_URL` | `http://localhost:8761/eureka/` | Eureka server URL (set via `eureka.client.service-url.defaultZone`) |
+| Variable | Purpose |
+|----------|---------|
+| `JWT_SECRET` | HS256 key (min 32 chars). Must match **user-service**. |
+| Eureka | `eureka.client.service-url.defaultZone` — default `http://localhost:8761/eureka/` |
 
-The gateway imports additional config from the config server (`http://localhost:8888`) when available, controlled by:
+Optional config server:
 
 ```yaml
 spring:
@@ -150,14 +122,10 @@ spring:
 
 ---
 
-## Running Locally
+## Running locally
 
-1. Start Eureka server (port `8761`) and Config server (port `8888`).
-2. Start downstream microservices — they register themselves in Eureka.
-3. Start the gateway:
+1. Start **Eureka** (`8761`) and optionally **Config server** (`8888`).
+2. Start business microservices; they register in Eureka.
+3. Run the gateway: `./mvnw spring-boot:run`
 
-```bash
-./mvnw spring-boot:run
-```
-
-Or with Docker Compose — see `/Users/ubaydah/Desktop/foodchain-deployment`.
+Docker-based orchestration: see **foodchain-deployment**.
