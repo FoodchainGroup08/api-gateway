@@ -17,6 +17,7 @@ All traffic enters on port **8080**. Paths use the **`/api/v1/**`** prefix (see 
 | Path prefix | Downstream service |
 |-------------|-------------------|
 | `/api/v1/orders/**` | `order-service` |
+| `/api/v1/payments/**` | `order-service` (e.g. Paystack webhook — **no JWT**; `POST .../paystack/webhook` is public) |
 | `/api/v1/menu/**` | `menu-service` |
 | `/api/v1/branch/**` | `branch-service` (legacy singular path, if configured) |
 | `/api/v1/branches/**` | `branch-service` (canonical branches API) |
@@ -69,6 +70,7 @@ Order: `-1` (runs before route predicates). Validates HS256 JWT using `jwt.secre
 | **Always public** | Prefixes: `/actuator`, `/swagger-ui`, `/v3/api-docs`, `/webjars`, `/swagger-resources`. |
 | **Auth (unauthenticated)** | `POST`/`GET` etc. under `/api/v1/auth/**` **except** `GET /api/v1/auth/me` (me requires a token). |
 | **GET only** | **Exactly** `GET /api/v1/branches` (paginated list), and **GET** `/api/v1/branches/nearby` (location search). |
+| **POST (webhook)** | **Exactly** `POST /api/v1/payments/paystack/webhook` (Paystack server-to-server callback). |
 
 Everything else requires:
 

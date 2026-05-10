@@ -14,6 +14,11 @@ spring:
           lower-case-service-id: true
       routes:
         # ── Service routes (API v1) ──────────────────────────────────────────
+        - id: order-service-payments
+          uri: lb://order-service
+          predicates:
+            - Path=/api/v1/payments/**
+
         - id: order-service
           uri: lb://order-service
           predicates:

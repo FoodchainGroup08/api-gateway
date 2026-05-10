@@ -65,6 +65,11 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
 
+        // Paystack webhooks — no Authorization header (verified by order-service via X-Paystack-Signature)
+        if (method == HttpMethod.POST && "/api/v1/payments/paystack/webhook".equals(path)) {
+            return chain.filter(exchange);
+        }
+
         if (isAlwaysPublic(path) || isWebSocketPath(path) || isPublicAuthPath(path) ||
                 (method == HttpMethod.GET && isAnonymousGet(path))) {
             return chain.filter(exchange);
