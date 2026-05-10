@@ -26,6 +26,7 @@ import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Component
 public class JwtAuthFilter implements GlobalFilter, Ordered {
@@ -44,12 +45,11 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
             "/swagger-resources"
     );
 
-    /** Public for GET only — write operations on these paths still require a token. */
-    private static final List<String> PUBLIC_GET_PREFIXES = List.of(
-            "/api/v1/branches",
-            "/api/v1/menu",
-            "/api/v1/notifications"
-    );
+    /**
+     * Only these GET paths are anonymous — everything else requires {@code Authorization: Bearer}.
+     * Branch list and nearby search stay public; branch-by-id and all menu/notifications GETs require auth.
+     */
+    private static final Pattern PUBLIC_BRANCH_LIST = Pattern.compile("^/api/v1/branches/?$");
 
     private static final List<String> WEBSOCKET_PATHS = List.of(
             "/ws/",
@@ -66,7 +66,7 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
         }
 
         if (isAlwaysPublic(path) || isWebSocketPath(path) || isPublicAuthPath(path) ||
-                (method == HttpMethod.GET && isPublicGetPath(path))) {
+                (method == HttpMethod.GET && isAnonymousGet(path))) {
             return chain.filter(exchange);
         }
 
@@ -111,8 +111,11 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
         return ALWAYS_PUBLIC.stream().anyMatch(path::startsWith);
     }
 
-    private boolean isPublicGetPath(String path) {
-        return PUBLIC_GET_PREFIXES.stream().anyMatch(path::startsWith);
+    private boolean isAnonymousGet(String path) {
+        if (PUBLIC_BRANCH_LIST.matcher(path).matches()) {
+            return true;
+        }
+        return path.startsWith("/api/v1/branches/nearby");
     }
 
     private boolean isWebSocketPath(String path) {
@@ -131,7 +134,8 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
     private Mono<Void> writeError(ServerWebExchange exchange, HttpStatus status, String message) {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(status);
-        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        response.getHeaders().set(HttpHeaders.CONTENT_TYPE,
+                MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8");
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("status", status.value());
@@ -145,7 +149,12 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
             DataBuffer buffer = response.bufferFactory().wrap(bytes);
             return response.writeWith(Mono.just(buffer));
         } catch (JsonProcessingException e) {
-            return response.setComplete();
+            byte[] fallback = ("{\"status\":" + status.value()
+                    + ",\"error\":\"" + status.getReasonPhrase()
+                    + "\",\"message\":\"" + message.replace("\\", "\\\\").replace("\"", "\\\"")
+                    + "\",\"path\":\"" + exchange.getRequest().getURI().getPath() + "\"}")
+                    .getBytes(StandardCharsets.UTF_8);
+            return response.writeWith(Mono.just(response.bufferFactory().wrap(fallback)));
         }
     }
 
