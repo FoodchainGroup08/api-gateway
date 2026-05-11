@@ -13,7 +13,17 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
-        # ── Service routes (API v1) ──────────────────────────────────────────
+        # ── Service routes ────────────────────────────────────────────────────
+        - id: user-service-auth
+          uri: lb://user-service
+          predicates:
+            - Path=/api/auth/**
+
+        - id: user-service-users
+          uri: lb://user-service
+          predicates:
+            - Path=/api/users/**
+
         - id: order-service
           uri: lb://order-service
           predicates:
@@ -27,7 +37,7 @@ spring:
         - id: branch-service
           uri: lb://branch-service
           predicates:
-            - Path=/api/v1/branch/**
+            - Path=/api/v1/branches/**
 
         - id: kitchen-service
           uri: lb://kitchen-service
@@ -44,6 +54,16 @@ spring:
           predicates:
             - Path=/api/v1/reports/**
 
+        - id: analytics-report-service-admin
+          uri: lb://analytics-report-service
+          predicates:
+            - Path=/api/v1/admin/**
+
+        - id: analytics-report-service-manager
+          uri: lb://analytics-report-service
+          predicates:
+            - Path=/api/v1/manager/**
+
         - id: notifications-service
           uri: lb://notifications-service
           predicates:
@@ -54,41 +74,7 @@ spring:
           predicates:
             - Path=/ws-notifications/**
 
-        # ── Auth & User routes (user-service) ────────────────────────────────
-        - id: user-service-auth
-          uri: lb://user-service
-          predicates:
-            - Path=/api/v1/auth/**
-
-        - id: user-service-users
-          uri: lb://user-service
-          predicates:
-            - Path=/api/v1/users/**
-
-        - id: user-service-admin-users
-          uri: lb://user-service
-          predicates:
-            - Path=/api/v1/admin/users/**
-
-        # ── Branches (canonical /branches path, branch-service) ──────────────
-        - id: branch-service-branches
-          uri: lb://branch-service
-          predicates:
-            - Path=/api/v1/branches/**
-
-        # ── Manager dashboard (analytics-report-service) ─────────────────────
-        - id: analytics-manager
-          uri: lb://analytics-report-service
-          predicates:
-            - Path=/api/v1/manager/**
-
-        # ── Admin analytics (analytics-report-service) ───────────────────────
-        - id: analytics-admin
-          uri: lb://analytics-report-service
-          predicates:
-            - Path=/api/v1/admin/analytics/**
-
-        # ── Raw WebSocket endpoints (notifications-service) ──────────────────
+        # ── WebSocket routes ──────────────────────────────────────────────────
         - id: ws-kitchen
           uri: lb:ws://notifications-service
           predicates:
@@ -105,8 +91,6 @@ spring:
             - Path=/ws/manager/**
 
         # ── OpenAPI docs proxy routes ─────────────────────────────────────────
-        # Each service has context-path /api, so its docs live at /api/v3/api-docs.
-        # The gateway proxies /v3/api-docs/{service} → lb://{service}/api/v3/api-docs.
         - id: user-service-docs
           uri: lb://user-service
           predicates:
@@ -188,7 +172,7 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     urls:
-      - name: User Service
+      - name: Authentication
         url: /v3/api-docs/user-service
       - name: Order Service
         url: /v3/api-docs/order-service
