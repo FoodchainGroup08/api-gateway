@@ -24,17 +24,16 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    /** Paths that do not require a Bearer token (gateway receives full paths e.g. /api/v1/auth/login). */
     private static final List<String> PUBLIC_PATHS = List.of(
-            "/api/v1/auth/login",
-            "/api/v1/auth/register",
-            "/api/v1/auth/refresh",
-            "/api/v1/auth/forgot-password",
-            "/api/v1/auth/reset-password",
-            "/api/v1/auth/verify-email",
-            "/api/v1/auth/resend-verification",
-            "/api/v1/auth/google",
-            "/api/v1/branches",
+            "/api/auth/login",
+            "/api/auth/register",
+            "/api/auth/refresh",
+            "/api/auth/logout",
+            "/api/auth/google",
+            "/api/auth/forgot-password",
+            "/api/auth/reset-password",
+            "/api/auth/verify-email",
+            "/api/auth/resend-verification",
             "/actuator",
             "/swagger-ui",
             "/v3/api-docs",
