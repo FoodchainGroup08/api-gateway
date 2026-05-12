@@ -1,6 +1,9 @@
 package com.microservices.gateway.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microservices.gateway.dto.BaseResponse;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -8,7 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -20,6 +25,12 @@ import java.util.List;
 
 @Component
 public class JwtAuthFilter implements GlobalFilter, Ordered {
+
+    private final ObjectMapper objectMapper;
+
+    public JwtAuthFilter(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Value("${jwt.secret}")
     private String jwtSecret;
@@ -57,8 +68,7 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+            return unauthorized(exchange, "Missing or invalid Authorization header. Use: Bearer <token>");
         }
 
         try {
@@ -81,9 +91,33 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
 
             return chain.filter(mutated);
 
+        } catch (ExpiredJwtException e) {
+            return unauthorized(exchange, "JWT token has expired. Please log in again.");
         } catch (JwtException e) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+            return unauthorized(exchange, "JWT token is invalid: " + e.getMessage());
+        } catch (Exception e) {
+            return unauthorized(exchange, "Unable to authenticate request: " + e.getMessage());
+        }
+    }
+
+    private Mono<Void> unauthorized(ServerWebExchange exchange, String message) {
+        var response = exchange.getResponse();
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
+        BaseResponse<Void> body = BaseResponse.error(
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                message,
+                exchange.getRequest().getURI().getPath()
+        );
+
+        try {
+            byte[] bytes = objectMapper.writeValueAsBytes(body);
+            DataBuffer buffer = response.bufferFactory().wrap(bytes);
+            return response.writeWith(Mono.just(buffer));
+        } catch (Exception e) {
+            return response.setComplete();
         }
     }
 
