@@ -8,6 +8,8 @@ spring:
     import: "optional:configserver:http://localhost:8888"
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials RETAIN_FIRST
       discovery:
         locator:
           enabled: true
