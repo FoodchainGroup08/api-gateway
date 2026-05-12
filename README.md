@@ -100,13 +100,13 @@ Downstream services should read these headers instead of parsing the JWT themsel
 
 ## CORS Configuration
 
-Global CORS is permissive for development. Tighten `allowed-origins` for production.
+Global CORS is controlled with `CORS_ALLOWED_ORIGINS`. Use a comma-separated list of exact frontend origins.
 
 ```yaml
 globalcors:
   cors-configurations:
     "[/**]":
-      allowed-origins: "*"
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000}
       allowed-methods: "*"
       allowed-headers: "*"
 ```
