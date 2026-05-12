@@ -76,6 +76,21 @@ spring:
           predicates:
             - Path=/ws-notifications/**
 
+        # ── OAuth2 server-side redirect routes ───────────────────────────────
+        - id: user-service-oauth2
+          uri: lb://user-service
+          predicates:
+            - Path=/oauth2/**
+          filters:
+            - RewritePath=/oauth2/(?<segment>.*), /api/oauth2/${segment}
+
+        - id: user-service-login-oauth2
+          uri: lb://user-service
+          predicates:
+            - Path=/login/oauth2/**
+          filters:
+            - RewritePath=/login/oauth2/(?<segment>.*), /api/login/oauth2/${segment}
+
         # ── WebSocket routes ──────────────────────────────────────────────────
         - id: ws-kitchen
           uri: lb:ws://notifications-service
