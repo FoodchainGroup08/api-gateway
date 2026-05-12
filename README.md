@@ -24,7 +24,7 @@ All requests enter at port `8080`. The gateway strips nothing — paths are forw
 | `/api/manager/**` | `analytics-report-service` | Manager dashboard endpoints |
 | `/api/admin/analytics/**` | `analytics-report-service` | Admin analytics endpoints |
 | `/api/notifications/**` | `notifications-service` | |
-| `/api/auth/**` | `user-service` | Login, register, refresh, forgot-password |
+| `/api/v1/auth/**` | `user-service` | Login, register, refresh, forgot-password |
 | `/api/users/**` | `user-service` | User profile / management |
 | `/api/admin/users/**` | `user-service` | Admin user management |
 
@@ -65,10 +65,10 @@ Requests to any of these path prefixes skip JWT validation:
 
 | Path |
 |---|
-| `/api/auth/login` |
-| `/api/auth/register` |
-| `/api/auth/refresh` |
-| `/api/auth/forgot-password` |
+| `/api/v1/auth/login` |
+| `/api/v1/auth/register` |
+| `/api/v1/auth/refresh` |
+| `/api/v1/auth/forgot-password` |
 | `/actuator/**` |
 | `/swagger-ui/**` |
 | `/v3/api-docs/**` |
