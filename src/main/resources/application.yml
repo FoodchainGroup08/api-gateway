@@ -143,9 +143,10 @@ spring:
       globalcors:
         cors-configurations:
           "[/**]":
-            allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000}
+            allowed-origin-patterns: "*"
             allowed-methods: "*"
             allowed-headers: "*"
+            exposed-headers: "Authorization"
 
 jwt:
   secret: ${JWT_SECRET:your-256-bit-secret-key-change-this-in-production-min-32-chars}
