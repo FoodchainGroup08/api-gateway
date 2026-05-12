@@ -45,6 +45,8 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
             "/api/v1/auth/reset-password",
             "/api/v1/auth/verify-email",
             "/api/v1/auth/resend-verification",
+            "/oauth2/",
+            "/login/oauth2/",
             "/actuator",
             "/swagger-ui",
             "/v3/api-docs",
