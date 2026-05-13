@@ -56,6 +56,13 @@ spring:
           predicates:
             - Path=/api/v1/reports/**
 
+        - id: user-service-admin-users
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/admin/users/**,/api/v1/admin/users
+          filters:
+            - RewritePath=/api/v1/admin/users(?<rest>.*), /api/v1/users${rest}
+
         - id: analytics-report-service-admin
           uri: lb://analytics-report-service
           predicates:
