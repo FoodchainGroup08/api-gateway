@@ -70,7 +70,10 @@
       "Bash(Get-Content \"C:\\\\Users\\\\ZAINAB\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-ZAINAB-Documents-GitHub-api-gateway\\\\1ba826bf-75a3-4682-999f-4e2cb2f1b99a\\\\tasks\\\\btqq29uf7.output\")",
       "Bash(Select-Object -Last 8)",
       "Bash(curl -s http://localhost:8084/api/actuator/health)",
-      "Bash(curl -s -X POST -H 'X-User-Role: KITCHEN_STAFF' -H 'X-User-Id: staff1' -H 'Content-Type: application/json' -d '{\"staffId\":\"staff1\",\"notes\":\"Starting prep\"}' http://localhost:8084/api/v1/kitchen/orders/43e6aab0-db32-4a08-a042-d3135c6184b9/accept)"
+      "Bash(curl -s -X POST -H 'X-User-Role: KITCHEN_STAFF' -H 'X-User-Id: staff1' -H 'Content-Type: application/json' -d '{\"staffId\":\"staff1\",\"notes\":\"Starting prep\"}' http://localhost:8084/api/v1/kitchen/orders/43e6aab0-db32-4a08-a042-d3135c6184b9/accept)",
+      "Bash(curl -s http://54.235.78.18:8080/api/v1/menu/items?size=3)",
+      "Bash(curl -s -X POST http://54.235.78.18:8080/api/v1/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"kitchen@demo.com\",\"password\":\"Demo@1234\"}')",
+      "PowerShell(cd \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\menu-service\"; docker build --no-cache -t zainabfad/menu-service:latest . 2>&1 | Where-Object { $_ -match \"ERROR|error|FAIL|fail|BUILD\" } | Select-Object -Last 20)"
     ],
     "additionalDirectories": [
       "c:\\Users\\ZAINAB\\Documents\\GitHub\\notification-service",

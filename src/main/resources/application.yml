@@ -24,7 +24,7 @@ spring:
         - id: user-service-users
           uri: lb://user-service
           predicates:
-            - Path=/api/users/**
+            - Path=/api/v1/users/**
 
         - id: order-service
           uri: lb://order-service
@@ -173,6 +173,7 @@ spring:
               - OPTIONS
             allowed-headers: "*"
             exposed-headers: "Authorization"
+            allow-credentials: true
 
 jwt:
   secret: ${JWT_SECRET:your-256-bit-secret-key-change-this-in-production-min-32-chars}
