@@ -56,7 +56,7 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
 
     private static final List<String> WEBSOCKET_PATHS = List.of(
             "/ws/",
-            "/ws-notifications/"
+            "/ws-notifications"
     );
 
     @Override
