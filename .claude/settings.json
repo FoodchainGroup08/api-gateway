@@ -73,7 +73,21 @@
       "Bash(curl -s -X POST -H 'X-User-Role: KITCHEN_STAFF' -H 'X-User-Id: staff1' -H 'Content-Type: application/json' -d '{\"staffId\":\"staff1\",\"notes\":\"Starting prep\"}' http://localhost:8084/api/v1/kitchen/orders/43e6aab0-db32-4a08-a042-d3135c6184b9/accept)",
       "Bash(curl -s http://54.235.78.18:8080/api/v1/menu/items?size=3)",
       "Bash(curl -s -X POST http://54.235.78.18:8080/api/v1/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"kitchen@demo.com\",\"password\":\"Demo@1234\"}')",
-      "PowerShell(cd \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\menu-service\"; docker build --no-cache -t zainabfad/menu-service:latest . 2>&1 | Where-Object { $_ -match \"ERROR|error|FAIL|fail|BUILD\" } | Select-Object -Last 20)"
+      "PowerShell(cd \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\menu-service\"; docker build --no-cache -t zainabfad/menu-service:latest . 2>&1 | Where-Object { $_ -match \"ERROR|error|FAIL|fail|BUILD\" } | Select-Object -Last 20)",
+      "Bash(dir \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\kitchen-service\\\\src\\\\main\\\\java\\\\com\\\\microservices\\\\kitchen\" /s)",
+      "PowerShell(cd \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\menu-service\"; docker build --no-cache -t zainabfad/menu-service:latest . 2>&1 | Where-Object { $_ -match \"BUILD|ERROR|error|FAIL\" } | Select-Object -Last 10)",
+      "PowerShell(cd \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\menu-service\"; docker build --no-cache -t zainabfad/menu-service:latest . 2>&1 | Where-Object { $_ -match \"ERROR|error|symbol|cannot\" } | Select-Object -First 20)",
+      "PowerShell(docker push zainabfad/menu-service:latest 2>&1)",
+      "PowerShell(cd \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\analytics-report-service\"; docker run --rm -v \"${PWD}:/app\" -w /app maven:3.9-eclipse-temurin-17 mvn compile -q 2>&1 | Select-Object -Last 15)",
+      "PowerShell(docker push zainabfad/analytics-report-service:latest 2>&1)",
+      "PowerShell(Get-Content \"C:\\\\Users\\\\ZAINAB\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-ZAINAB-Documents-GitHub-api-gateway\\\\1ba826bf-75a3-4682-999f-4e2cb2f1b99a\\\\tasks\\\\b56azc4zb.output\" -Wait -Tail 10 2>&1)",
+      "Bash(pip install *)",
+      "Bash(pip3 --version)",
+      "Bash(New-Item -ItemType Directory -Force -Path \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\api-gateway\\\\docs\")",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\foodchain-deployment\" -Recurse -Force | Where-Object { $_.Name -match '\\\\.\\(tf|json\\)$' -or $_.Name -eq 'buildspec.yml' -or $_.Name -eq 'appspec.yml' -or $_.Name -eq 'docker-compose.yml' } | Select-Object FullName)",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\ZAINAB\\\\Documents\\\\GitHub\\\\foodchain-deployment\" -Recurse -Directory | Where-Object { $_.Name -match 'k8s|deploy|terraform|infra' } | Select-Object FullName)",
+      "PowerShell(python --version 2>&1)",
+      "PowerShell(pip show diagrams 2>&1)"
     ],
     "additionalDirectories": [
       "c:\\Users\\ZAINAB\\Documents\\GitHub\\notification-service",
@@ -81,7 +95,8 @@
       "c:\\Users\\ZAINAB\\Documents\\GitHub\\notifications-service",
       "C:\\Users\\ZAINAB\\Documents\\GitHub\\analytics-report-service\\src\\main\\java\\com\\microservices",
       "c:\\Users\\ZAINAB\\Documents\\GitHub\\analytics-report-service",
-      "\\tmp"
+      "\\tmp",
+      "c:\\Users\\ZAINAB\\Documents\\GitHub\\api-gateway"
     ]
   }
 }

@@ -79,7 +79,7 @@ spring:
             - Path=/api/v1/notifications/**
 
         - id: notifications-service-ws
-          uri: lb://notifications-service
+          uri: lb:ws://notifications-service
           predicates:
             - Path=/ws-notifications/**
 

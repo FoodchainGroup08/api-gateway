@@ -1,0 +1,271 @@
+<mxfile host="65bd71144e">
+    <diagram name="FoodChain Architecture" id="CkPnt0RaKhOF1S9x8v18">
+        <mxGraphModel dx="4939" dy="3067" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4800" pageHeight="2600" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="customer" value="Customer" style="shape=mxgraph.aws4.user;fillColor=#232F3E;strokeColor=none;fontColor=#232F3E;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=13;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="140" y="1500" width="90" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="cicd_bg" value="CI / CD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;fontStyle=1;fontSize=15;verticalAlign=top;arcSize=2;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="-171" y="-43" width="480" height="2000" as="geometry"/>
+                </mxCell>
+                <mxCell id="gh_repos" value="GitHub&#xa;12 Repos" style="shape=mxgraph.vcs.github;fillColor=#24292E;strokeColor=none;fontColor=#24292E;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="215" y="90" width="90" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="gh_build" value="GitHub Actions&#xa;Build &amp; Push" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2088FF;strokeColor=#0366D6;fontColor=#ffffff;fontSize=13;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="100" y="310" width="320" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="dockerhub" value="Docker Hub" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0db7ed;strokeColor=#086DA0;fontColor=#ffffff;fontSize=13;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="520" width="200" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="gh_deploy" value="GitHub Actions&#xa;Deploy (SSH · manual)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2088FF;strokeColor=#0366D6;fontColor=#ffffff;fontSize=13;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="100" y="730" width="320" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="gh_config" value="foodchain-config&#xa;GitHub Repo" style="shape=mxgraph.vcs.github;fillColor=#24292E;strokeColor=none;fontColor=#24292E;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="215" y="990" width="90" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="aws_cloud" value="AWS Cloud" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;verticalLabelPosition=top;verticalAlign=bottom;align=center;html=1;fillColor=#F8FBFF;strokeColor=#232F3E;fontColor=#232F3E;fontStyle=1;fontSize=17;" parent="1" vertex="1">
+                    <mxGeometry x="560" y="20" width="3580" height="2540" as="geometry"/>
+                </mxCell>
+                <mxCell id="ec2_a1" value="EC2 — Account 1  (t2.micro · Amazon Linux 2023)" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_ec2_instance_contents;strokeColor=#147EBA;fillColor=#E6F2F8;verticalAlign=top;align=center;spacingTop=28;fontColor=#147EBA;fontSize=12;fontStyle=1;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="610" y="80" width="1460" height="2410" as="geometry"/>
+                </mxCell>
+                <mxCell id="ec2_a1_icon" value="EC2" style="outlineConnect=0;fontColor=#232F3E;gradientColor=#F54749;gradientDirection=north;fillColor=#BF0816;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ec2;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="632" y="112" width="52" height="52" as="geometry"/>
+                </mxCell>
+                <mxCell id="infra_grp" value="Infrastructure" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontStyle=1;fontSize=13;verticalAlign=top;arcSize=4;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="200" width="1380" height="330" as="geometry"/>
+                </mxCell>
+                <mxCell id="config_svc" value="Config Server&#xa;:8888" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF6D00;strokeColor=#E65100;fontColor=#ffffff;fontSize=14;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="690" y="300" width="280" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="eureka_svc" value="Eureka Registry&#xa;:8761" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00897B;strokeColor=#00695C;fontColor=#ffffff;fontSize=14;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1220" y="300" width="280" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="api_gw" value="API Gateway  :8080  ·  JWT Auth  ·  Eureka LB Routing  ·  WebSocket  ·  CORS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4A148C;strokeColor=#311B92;fontColor=#ffffff;fontSize=13;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="620" width="1380" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="a1_svc_grp" value="Account 1 Services" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontStyle=1;fontSize=13;verticalAlign=top;arcSize=4;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="860" width="1380" height="310" as="geometry"/>
+                </mxCell>
+                <mxCell id="user_svc" value="User Service&#xa;:8086" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=#0D47A1;fontColor=#ffffff;fontSize=14;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="960" width="280" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="branch_svc" value="Branch Service&#xa;:8081" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=#0D47A1;fontColor=#ffffff;fontSize=14;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1060" y="960" width="280" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="analytics_svc" value="Analytics Service&#xa;:8085" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=#0D47A1;fontColor=#ffffff;fontSize=14;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1450" y="960" width="280" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="data_grp" value="Data Layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#546E7A;fontStyle=1;fontSize=13;verticalAlign=top;arcSize=4;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="1290" width="1380" height="480" as="geometry"/>
+                </mxCell>
+                <mxCell id="rds" value="RDS MySQL 8.0&#xa;db.t3.micro · 6 schemas" style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#C7131F;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rds;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="810" y="1400" width="90" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="s3" value="S3&#xa;foodchain-images-bucket" style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#3F8624;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1310" y="1400" width="90" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="ec2_a2" value="EC2 — Account 2  (t2.micro · registers with Account 1 Eureka)" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_ec2_instance_contents;strokeColor=#2E7D32;fillColor=#E8F5E9;verticalAlign=top;align=center;spacingTop=28;fontColor=#2E7D32;fontSize=12;fontStyle=1;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="2250" y="80" width="1460" height="2410" as="geometry"/>
+                </mxCell>
+                <mxCell id="ec2_a2_icon" value="EC2" style="outlineConnect=0;fontColor=#232F3E;gradientColor=#F54749;gradientDirection=north;fillColor=#BF0816;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ec2;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="2272" y="112" width="52" height="52" as="geometry"/>
+                </mxCell>
+                <mxCell id="a2_svc_grp" value="Account 2 Services" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontStyle=1;fontSize=13;verticalAlign=top;arcSize=4;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="2290" y="200" width="1380" height="720" as="geometry"/>
+                </mxCell>
+                <mxCell id="order_svc" value="Order Service&#xa;:8083" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6A1B9A;strokeColor=#4A148C;fontColor=#ffffff;fontSize=14;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="2310" y="320" width="280" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="menu_svc" value="Menu Service&#xa;:8082" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6A1B9A;strokeColor=#4A148C;fontColor=#ffffff;fontSize=14;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="2830" y="320" width="280" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="kitchen_svc" value="Kitchen Service&#xa;:8084&#xa;Redis · WebSocket" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1B5E20;strokeColor=#1B5E20;fontColor=#ffffff;fontSize=14;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="2310" y="570" width="280" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="notif_svc" value="Notifications&#xa;:8087&#xa;WebSocket · Email" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#880E4F;strokeColor=#880E4F;fontColor=#ffffff;fontSize=14;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="2830" y="570" width="280" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="ext_bg" value="External Services" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontStyle=1;fontSize=15;verticalAlign=top;arcSize=2;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="4220" y="20" width="380" height="2000" as="geometry"/>
+                </mxCell>
+                <mxCell id="kafka" value="Confluent Kafka&#xa;(SASL_SSL)" style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#FF6D00;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.msk;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="4355" y="120" width="90" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="redis" value="Redis Cloud&#xa;Cache · Queue" style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#C7131F;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elasticache;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="4355" y="430" width="90" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="google" value="Google OAuth 2.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4285F4;strokeColor=#1A73E8;fontColor=#ffffff;fontSize=13;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="4270" y="730" width="240" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="brevo" value="Brevo / Gmail SMTP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F9D58;strokeColor=#0B8043;fontColor=#ffffff;fontSize=13;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="4270" y="960" width="240" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_gh_build" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#558B2F;strokeWidth=2;" parent="1" source="gh_repos" target="gh_build" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_build_docker" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#558B2F;strokeWidth=2;" parent="1" source="gh_build" target="dockerhub" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_docker_a1" value="docker pull" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0db7ed;strokeWidth=2;dashed=1;fontSize=11;" parent="1" source="dockerhub" target="ec2_a1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_docker_a2" value="docker pull" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0db7ed;strokeWidth=2;dashed=1;fontSize=11;" parent="1" source="dockerhub" target="ec2_a2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_deploy_a1" value="SSH deploy" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#558B2F;strokeWidth=2;dashed=1;fontSize=11;" parent="1" source="gh_deploy" target="ec2_a1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_deploy_a2" value="SSH deploy" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#558B2F;strokeWidth=2;dashed=1;fontSize=11;" parent="1" source="gh_deploy" target="ec2_a2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_config_repo" value="git clone" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24292E;strokeWidth=2;dashed=1;fontSize=11;" parent="1" source="gh_config" target="config_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_customer" value="HTTPS :8080" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4A148C;strokeWidth=4;fontSize=12;fontStyle=1;" parent="1" source="customer" target="api_gw" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_cfg_eur" value="config" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E65100;strokeWidth=1;dashed=1;fontSize=10;" parent="1" source="config_svc" target="eureka_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_cfg_gw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E65100;strokeWidth=1;dashed=1;" parent="1" source="config_svc" target="api_gw" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_cfg_us" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E65100;strokeWidth=1;dashed=1;" parent="1" source="config_svc" target="user_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_cfg_br" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E65100;strokeWidth=1;dashed=1;" parent="1" source="config_svc" target="branch_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_cfg_an" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E65100;strokeWidth=1;dashed=1;" parent="1" source="config_svc" target="analytics_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_cfg_os" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E65100;strokeWidth=1;dashed=1;" parent="1" source="config_svc" target="order_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_cfg_ms" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E65100;strokeWidth=1;dashed=1;" parent="1" source="config_svc" target="menu_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_cfg_ks" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E65100;strokeWidth=1;dashed=1;" parent="1" source="config_svc" target="kitchen_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_cfg_ns" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E65100;strokeWidth=1;dashed=1;" parent="1" source="config_svc" target="notif_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_eur_gw" value="register" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#00695C;strokeWidth=1;dashed=1;fontSize=10;" parent="1" source="api_gw" target="eureka_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_eur_us" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#00695C;strokeWidth=1;dashed=1;" parent="1" source="user_svc" target="eureka_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_eur_br" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#00695C;strokeWidth=1;dashed=1;" parent="1" source="branch_svc" target="eureka_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_eur_an" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#00695C;strokeWidth=1;dashed=1;" parent="1" source="analytics_svc" target="eureka_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_eur_os" value="cross-account" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#00695C;strokeWidth=2;dashed=1;fontSize=10;" parent="1" source="order_svc" target="eureka_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_eur_ms" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#00695C;strokeWidth=2;dashed=1;" parent="1" source="menu_svc" target="eureka_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_eur_ks" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#00695C;strokeWidth=2;dashed=1;" parent="1" source="kitchen_svc" target="eureka_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_eur_ns" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#00695C;strokeWidth=2;dashed=1;" parent="1" source="notif_svc" target="eureka_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_gw_us" value="lb://user-service" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4A148C;strokeWidth=2;fontSize=10;" parent="1" source="api_gw" target="user_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_gw_br" value="lb://branch-service" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4A148C;strokeWidth=2;fontSize=10;" parent="1" source="api_gw" target="branch_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_gw_an" value="lb://analytics-service" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4A148C;strokeWidth=2;fontSize=10;" parent="1" source="api_gw" target="analytics_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_gw_os" value="lb://order-service" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4A148C;strokeWidth=2;fontSize=10;" parent="1" source="api_gw" target="order_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_gw_ms" value="lb://menu-service" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4A148C;strokeWidth=2;fontSize=10;" parent="1" source="api_gw" target="menu_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_gw_ks" value="lb://kitchen-service" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4A148C;strokeWidth=2;fontSize=10;" parent="1" source="api_gw" target="kitchen_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_gw_ns" value="lb://notifications-service" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4A148C;strokeWidth=2;fontSize=10;" parent="1" source="api_gw" target="notif_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_rds_us" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C7131F;strokeWidth=2;" parent="1" source="user_svc" target="rds" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_rds_br" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C7131F;strokeWidth=2;" parent="1" source="branch_svc" target="rds" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_rds_an" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C7131F;strokeWidth=2;" parent="1" source="analytics_svc" target="rds" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_rds_os" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C7131F;strokeWidth=2;" parent="1" source="order_svc" target="rds" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_rds_ms" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C7131F;strokeWidth=2;" parent="1" source="menu_svc" target="rds" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_rds_ns" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C7131F;strokeWidth=2;" parent="1" source="notif_svc" target="rds" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_red_us" value="cache" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C7131F;strokeWidth=1;dashed=1;fontSize=10;" parent="1" source="user_svc" target="redis" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_red_ms" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C7131F;strokeWidth=1;dashed=1;" parent="1" source="menu_svc" target="redis" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_red_os" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C7131F;strokeWidth=1;dashed=1;" parent="1" source="order_svc" target="redis" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_red_ks" value="order queue" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C7131F;strokeWidth=2;dashed=1;fontSize=10;" parent="1" source="kitchen_svc" target="redis" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_red_an" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C7131F;strokeWidth=1;dashed=1;" parent="1" source="analytics_svc" target="redis" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_red_ns" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C7131F;strokeWidth=1;dashed=1;" parent="1" source="notif_svc" target="redis" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_kfk_prod_o" value="PRODUCE" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#FF6D00;strokeWidth=3;fontSize=11;fontStyle=1;" parent="1" source="order_svc" target="kafka" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_kfk_prod_m" value="PRODUCE" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#FF6D00;strokeWidth=2;fontSize=11;fontStyle=1;" parent="1" source="menu_svc" target="kafka" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_kfk_cons_k" value="CONSUME&#xa;order.received" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1B5E20;strokeWidth=3;fontSize=11;fontStyle=1;" parent="1" source="kafka" target="kitchen_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_kfk_cons_a" value="CONSUME" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1B5E20;strokeWidth=2;fontSize=11;" parent="1" source="kafka" target="analytics_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_kfk_cons_n" value="CONSUME&#xa;order.ready" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#880E4F;strokeWidth=3;fontSize=11;fontStyle=1;" parent="1" source="kafka" target="notif_svc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_s3_us" value="upload" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#3F8624;strokeWidth=1;dashed=1;fontSize=10;" parent="1" source="user_svc" target="s3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_s3_ms" value="upload" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#3F8624;strokeWidth=1;dashed=1;fontSize=10;" parent="1" source="menu_svc" target="s3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_oauth" value="OAuth2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4285F4;strokeWidth=2;dashed=1;fontSize=10;" parent="1" source="user_svc" target="google" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_email_send" value="send email" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0B8043;strokeWidth=2;fontSize=11;" parent="1" source="notif_svc" target="brevo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_email_cust" value="email" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0B8043;strokeWidth=1;dashed=1;fontSize=10;" parent="1" source="brevo" target="customer" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

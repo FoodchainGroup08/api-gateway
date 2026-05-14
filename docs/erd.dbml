@@ -1,0 +1,354 @@
+// ============================================================
+// FoodChain Microservices — Entity Relationship Diagram
+// Generated from actual JPA entity classes across all services
+//
+// HOW TO USE:
+//   1. Go to https://dbdiagram.io
+//   2. Click "Import" → paste this file content
+//   3. The diagram will render with all tables and relationships
+//
+// SERVICES COVERED:
+//   - user-service        (users)
+//   - branch-service      (branches, branch_hours)
+//   - menu-service        (menu_categories, menu_items)
+//   - order-service       (orders, order_items, order_status_updates, outbox_events)
+//   - analytics-service   (order_analytics, branch_daily_summary, order_item_analytics, reports)
+//   - notifications-service (notification_logs)
+//
+// NOTE: Cross-service Refs are logical references (no DB-level FK enforcement).
+//       Within-service Refs are physical FK constraints.
+// ============================================================
+
+
+// ============================================================
+// USER SERVICE
+// ============================================================
+
+Table users {
+  id              uuid      [pk, default: `gen_random_uuid()`]
+  email           varchar   [unique, not null, note: "login email"]
+  password_hash   varchar   [note: "bcrypt cost 12"]
+  name            varchar
+  role            varchar   [not null, default: "CUSTOMER", note: "CUSTOMER|KITCHEN_STAFF|BRANCH_MANAGER|HEAD_OFFICE_ADMIN"]
+  branch_id       uuid      [note: "cross-service FK branches.id, nullable"]
+  is_active       boolean   [not null, default: true, note: "soft-delete"]
+  is_email_verified boolean [not null, default: false]
+  created_at      timestamp
+  updated_at      timestamp
+  address_line    text
+  latitude        numeric
+  longitude       numeric
+  oauth2_provider       varchar
+  oauth2_provider_id    varchar
+
+  Note: "User Service — auth & profiles"
+}
+
+
+// ============================================================
+// BRANCH SERVICE
+// ============================================================
+
+Table branches {
+  id          char(36)  [pk]
+  name        varchar   [not null]
+  address     text      [not null]
+  phone       varchar
+  description text
+  is_active   boolean   [not null, default: false, note: "DEFAULT false, activated by Admin"]
+  manager_id  char(36)  [note: "cross-service ref to users"]
+  latitude    numeric
+  longitude   numeric
+  created_at  timestamp
+  updated_at  timestamp
+  rating      numeric   [default: 0.0]
+
+  Note: "Branch Service"
+
+  indexes {
+    manager_id  [name: "idx_branch_manager"]
+    is_active   [name: "idx_branch_active"]
+  }
+}
+
+Table branch_hours {
+  id           char(36) [pk]
+  branch_id    char(36) [not null, ref: > branches.id]
+  day_of_week  int      [not null, note: "0=Mon to 6=Sun, UNIQUE(branch_id, day)"]
+  open_time    time
+  close_time   time
+  is_closed    boolean  [not null, default: false, note: "closed all day flag"]
+
+  indexes {
+    (branch_id, day_of_week) [unique, name: "uq_branch_day"]
+  }
+}
+
+
+// ============================================================
+// MENU SERVICE
+// ============================================================
+
+Table menu_categories {
+  id            char(36) [pk]
+  name          varchar  [not null, unique]
+  display_order int      [default: 0, note: "DEFAULT 0, sort within category"]
+  is_active     boolean  [default: true]
+  created_at    timestamp
+
+  Note: "Menu Service"
+}
+
+Table menu_items {
+  id               char(36)  [pk]
+  name             varchar   [not null]
+  description      text
+  category_id      char(36)  [ref: > menu_categories.id, note: "nullable"]
+  base_price       numeric   [not null, note: "CHECK > 0, default price for all branches"]
+  image_url        varchar
+  is_active        boolean   [default: true, note: "DEFAULT true"]
+  is_globally_active boolean [default: true, note: "DEFAULT true"]
+  created_by       char(36)  [note: "cross-service ref to HEAD_OFFICE_ADMIN user"]
+  created_at       timestamp
+  updated_at       timestamp
+}
+
+
+// ============================================================
+// ORDER SERVICE
+// ============================================================
+
+Table orders {
+  id                   char(36)  [pk]
+  branch_id            char(36)  [not null, note: "INDEX, cross-service"]
+  customer_id          char(36)  [not null, note: "INDEX, cross-service"]
+  order_type           varchar   [not null, note: "DINE_IN|TAKEAWAY|DELIVERY"]
+  status               varchar   [not null, note: "DEFAULT RECEIVED"]
+  table_number         varchar   [note: "nullable, DINE_IN only"]
+  delivery_address     text      [note: "nullable, DELIVERY only"]
+  total_amount         numeric   [not null]
+  notes                text
+  version              bigint    [not null, note: "DEFAULT 0, optimistic lock"]
+  idempotency_key      varchar   [unique, note: "nullable, prevents duplicate submission"]
+  created_at           timestamp
+  updated_at           timestamp
+  customer_name        varchar
+  customer_email       varchar
+  phone_number         varchar
+  payment_method       varchar
+  special_instructions text
+  delivery_fee         numeric   [default: 0]
+  branch_name          varchar
+  estimated_time       varchar
+
+  Note: "Order Service"
+
+  indexes {
+    branch_id             [name: "idx_branch_id"]
+    customer_id           [name: "idx_customer_id"]
+    (branch_id, status)   [name: "idx_branch_status"]
+  }
+}
+
+Table order_items {
+  id                   char(36) [pk]
+  order_id             char(36) [not null, ref: > orders.id]
+  menu_item_id         char(36) [not null, note: "cross-service ref to menu_items"]
+  menu_item_name       varchar  [not null, note: "snapshotted at order time"]
+  quantity             smallint [not null]
+  unit_price           numeric  [not null, note: "snapshotted at order time"]
+  special_instructions text
+  subtotal             numeric  [not null, note: "quantity x unit_price"]
+}
+
+Table order_status_updates {
+  id          char(36)  [pk]
+  order_id    char(36)  [not null, ref: > orders.id, note: "INDEX"]
+  old_status  varchar   [note: "nullable on INSERT RECEIVED"]
+  new_status  varchar   [not null]
+  updated_by  char(36)  [not null, note: "cross-service ref to user"]
+  notes       text
+  timestamp   timestamp [default: `now()`]
+
+  indexes {
+    order_id [name: "idx_status_order_id"]
+  }
+}
+
+Table outbox_events {
+  id            char(36) [pk]
+  topic         varchar  [not null, note: "Target Kafka topic"]
+  partition_key varchar  [not null, note: "branch_id for order topics"]
+  payload       text     [not null]
+  published     boolean  [not null, note: "INDEX WHERE false"]
+  created_at    timestamp
+
+  indexes {
+    published  [name: "idx_outbox_published"]
+    created_at [name: "idx_outbox_created"]
+  }
+}
+
+
+// ============================================================
+// ANALYTICS / REPORT SERVICE
+// ============================================================
+
+Table order_analytics {
+  id               bigint    [pk, increment]
+  order_id         char(36)  [unique, not null, note: "UNIQUE(order_id)"]
+  branch_id        char(36)  [not null]
+  customer_id      char(36)  [not null]
+  status           varchar   [not null]
+  order_type       varchar   [not null]
+  total_amount     numeric   [not null]
+  item_count       int       [not null]
+  order_received_at timestamp [not null]
+  last_updated_at  timestamp
+  completed_at     timestamp
+
+  Note: "Analytics Service — consumed by (via Kafka)"
+
+  indexes {
+    branch_id                       [name: "idx_oa_branch_id"]
+    customer_id                     [name: "idx_oa_customer_id"]
+    order_received_at               [name: "idx_oa_received_at"]
+    (branch_id, order_received_at)  [name: "idx_oa_branch_date"]
+  }
+}
+
+Table branch_daily_summary {
+  id               bigint   [pk, increment]
+  branch_id        char(36) [not null, note: "UNIQUE(branch_id, rollup_date)"]
+  rollup_date      date     [not null]
+  total_orders     int      [not null, default: 0]
+  completed_orders int      [not null, default: 0]
+  cancelled_orders int      [not null, default: 0]
+  total_revenue    numeric  [not null, default: 0]
+  avg_order_value  numeric  [default: 0]
+  dine_in_count    int      [not null, default: 0]
+  takeaway_count   int      [not null, default: 0]
+  delivery_count   int      [not null, default: 0]
+  top_items        jsonb    [note: "array of {branch_id, name, count, revenue}"]
+  created_at       timestamp
+
+  indexes {
+    (branch_id, rollup_date) [unique, name: "uk_branch_date"]
+    branch_id   [name: "idx_bds_branch_id"]
+    rollup_date [name: "idx_bds_summary_date"]
+  }
+}
+
+Table order_item_analytics {
+  id               bigint    [pk, increment]
+  order_id         char(36)  [not null]
+  branch_id        char(36)  [not null]
+  menu_item_id     char(36)  [not null]
+  menu_item_name   varchar   [not null]
+  category         varchar
+  quantity         int       [not null]
+  unit_price       numeric   [not null]
+  line_total       numeric   [not null]
+  order_status     varchar   [not null]
+  order_received_at timestamp [not null]
+
+  indexes {
+    (branch_id, order_received_at) [name: "idx_oia_branch_date"]
+    order_id     [name: "idx_oia_order_id"]
+    menu_item_id [name: "idx_oia_menu_item_id"]
+  }
+}
+
+Table reports {
+  id               bigint   [pk, increment]
+  report_type      varchar  [not null, note: "HYPERPARTITION KEY: 7-day chunks"]
+  branch_id        char(36)
+  start_date       date     [not null]
+  end_date         date     [not null]
+  generated_at     timestamp [not null]
+  generated_by     varchar
+  total_orders     int      [default: 0]
+  completed_orders int      [default: 0]
+  cancelled_orders int      [default: 0]
+  total_revenue    numeric  [default: 0]
+  avg_order_value  numeric  [default: 0]
+  dine_in_count    int      [default: 0]
+  takeaway_count   int      [default: 0]
+  delivery_count   int      [default: 0]
+
+  indexes {
+    branch_id    [name: "idx_report_branch_id"]
+    generated_at [name: "idx_report_generated_at"]
+    report_type  [name: "idx_report_type"]
+  }
+}
+
+
+// ============================================================
+// NOTIFICATIONS SERVICE
+// ============================================================
+
+Table notification_logs {
+  id                char(36)  [pk]
+  notification_type varchar   [not null, note: "ORDER_RECEIVED|STATUS_UPDATE|ORDER_READY|EMAIL"]
+  order_id          varchar
+  customer_id       varchar
+  branch_id         varchar
+  recipient_email   varchar
+  title             varchar
+  message           text
+  order_status      varchar
+  sent_at           timestamp [not null]
+  is_read           boolean   [not null, default: false]
+  read_at           timestamp
+
+  Note: "Notifications Service"
+
+  indexes {
+    order_id    [name: "idx_order_id"]
+    customer_id [name: "idx_customer_id"]
+    sent_at     [name: "idx_sent_at"]
+  }
+}
+
+
+// ============================================================
+// WITHIN-SERVICE RELATIONSHIPS  (physical FK constraints)
+// ============================================================
+
+Ref: branch_hours.branch_id > branches.id [delete: cascade]
+
+Ref: menu_items.category_id > menu_categories.id
+
+Ref: order_items.order_id > orders.id [delete: cascade]
+Ref: order_status_updates.order_id > orders.id
+
+
+// ============================================================
+// CROSS-SERVICE LOGICAL REFERENCES  (no DB-level FK enforcement)
+// ============================================================
+
+// user-service ↔ branch-service
+Ref: users.branch_id > branches.id
+Ref: branches.manager_id > users.id
+
+// order-service → branch / user / menu
+Ref: orders.branch_id > branches.id
+Ref: orders.customer_id > users.id
+Ref: order_items.menu_item_id > menu_items.id
+Ref: order_status_updates.updated_by > users.id
+
+// analytics-service → orders / branches / users / menu  (sourced via Kafka)
+Ref: order_analytics.order_id > orders.id
+Ref: order_analytics.branch_id > branches.id
+Ref: order_analytics.customer_id > users.id
+Ref: order_item_analytics.order_id > orders.id
+Ref: order_item_analytics.branch_id > branches.id
+Ref: order_item_analytics.menu_item_id > menu_items.id
+Ref: branch_daily_summary.branch_id > branches.id
+Ref: reports.branch_id > branches.id
+
+// notifications-service → orders / users / branches  (sourced via Kafka)
+Ref: notification_logs.order_id > orders.id
+Ref: notification_logs.customer_id > users.id
+Ref: notification_logs.branch_id > branches.id
